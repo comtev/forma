@@ -1,0 +1,24 @@
+version: '3'
+services:
+  registry:
+    restart: always
+    image: "registry:2"
+    environment:
+     REGISTRY_AUTH: htpasswd
+     REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
+     REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+     REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+     REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+    volumes:
+     - /root/auth:/auth
+     - /root/certs:/certs
+
+  web:
+    image: "hyper/docker-registry-web"
+    ports:
+     - "8080:8080"
+    environment:
+     REGISTRY_URL: "https://registry:5000/v2"
+     REGISTRY_TRUST_ANY_SSL: "true"
+     REGISTRY_BASIC_AUTH: "dG90bzp0b3Rv"
+     REGISTRY_NAME: "localhost:5000"
